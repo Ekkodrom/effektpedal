@@ -1,7 +1,7 @@
 from effects.granular import GranularEffect
 from effects.reverb import ReverbEffect
 from effects.delay import DelayEffect
-from effects.revers_delay import ReverseDelayEffect
+from effects.reverse_delay import ReverseDelayEffect
 from effects.habit_granular_effect import HabitGranularEffect
 
 
@@ -11,7 +11,8 @@ class EffectManager:
             "granular": GranularEffect(),
             "reverb": ReverbEffect(),
             "delay": DelayEffect(),
-            "reverse_delay": ReverseDelayEffect()
+            "reverse_delay": ReverseDelayEffect(),
+            "habit_granular": HabitGranularEffect(),
         }
         self.active_effects = {}
 
