@@ -2,6 +2,11 @@ from PyQt5.QtWidgets import QApplication
 from gui import EffectPedalGUI
 from audio_engine.audio_input import AudioInput
 from motion_control.motion_tracker import MotionTracker
+from pythonosc import udp_client
+
+osc_client = udp_client.SimpleUDPClient("127.0.0.1", 57120)  # SC listens here
+osc_client.send_message("/setFreq", 440)  # send a frequency value
+
 
 class MainApp:
     def __init__(self):
