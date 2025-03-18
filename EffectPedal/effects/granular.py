@@ -1,3 +1,5 @@
+import sys
+sys.path.append("/usr/local/lib/python3.9/site-packages")  # Adjust path if needed
 from sc3.all import *
 
 class GranularEffect:
