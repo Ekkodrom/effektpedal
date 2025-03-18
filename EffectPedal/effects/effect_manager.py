@@ -2,6 +2,8 @@ from effects.granular import GranularEffect
 from effects.reverb import ReverbEffect
 from effects.delay import DelayEffect
 from effects.reverse_delay import ReverseDelayEffect
+from habit_granular_effect import HabitGranularEffect
+
 
 class EffectManager:
     def __init__(self):
