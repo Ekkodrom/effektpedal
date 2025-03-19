@@ -2,7 +2,7 @@ from sc3.all import *
 
 class GranularEffect:
     def __init__(self):
-        self.server = Server("localhost", addr=("127.0.0.1", 57110))  # Correct parameters
+        self.server = Server("localhost", "127.0.0.1", 57110)  # ✅ Correct format
         self.server.boot()
         self.define_granular_synth()
 
