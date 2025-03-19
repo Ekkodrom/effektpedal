@@ -1,7 +1,7 @@
 from effects.granular import GranularEffect
 from effects.reverb import ReverbEffect
 from effects.delay import DelayEffect
-from effects.reverse_delay import ReverseDelayEffect
+from effects.revers_delay import ReverseDelayEffect
 from effects.habit_granular_effect import HabitGranularEffect
 
 
