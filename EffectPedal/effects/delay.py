@@ -2,7 +2,7 @@ from sc3.all import *
 
 class DelayEffect:
     def __init__(self):
-        self.server = Server("scsynth", "127.0.0.1", 57110)  # ✅ Correct
+        self.server = Server(name="scsynth", addr=()"127.0.0.1", 57110))  # ✅ Correct
         self.server.boot()
         self.define_delay_synth()
 
