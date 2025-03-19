@@ -2,8 +2,7 @@ from sc3.all import *
 
 class ReverbEffect:
     def __init__(self):
-        self.server = Server("localhost")  # Only pass the name
-        self.server.addr = ("127.0.0.1", 57110)  # Set addr separately
+        self.server = Server("localhost", addr=("127.0.0.1", 57110))  # Correct parameters
         self.server.boot()
         self.define_reverb_synth()
 
@@ -11,9 +10,9 @@ class ReverbEffect:
         SynthDef("hall_reverb", {
             "in": 0,
             "room_size": 0.8,  # Larger values create a bigger space effect
-            "damping": 0.5,  # Controls how quickly high frequencies decay
-            "wet": 0.5,  # Amount of reverb mixed into the signal
-            "dry": 0.5,  # Amount of dry signal
+            "damping": 0.5,    # Controls how quickly high frequencies decay
+            "wet": 0.5,        # Amount of reverb mixed into the signal
+            "dry": 0.5,        # Amount of dry signal
             "amp": 1.0
         }).add()
 

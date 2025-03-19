@@ -2,8 +2,7 @@ from sc3.all import *
 
 class DelayEffect:
     def __init__(self):
-        self.server = Server("localhost")  # Only pass the name
-        self.server.addr = ("127.0.0.1", 57110)  # Set addr separately
+        self.server = Server("localhost", addr=("127.0.0.1", 57110))  # Correct parameters
         self.server.boot()
         self.define_delay_synth()
 
@@ -11,9 +10,9 @@ class DelayEffect:
         SynthDef("delay_effect", {
             "in": 0,
             "delay_time": 0.5,  # Delay time in seconds
-            "feedback": 0.5,  # Controls how much of the delayed signal is fed back
-            "wet": 0.5,  # Amount of delay in the mix
-            "dry": 0.5,  # Amount of original signal
+            "feedback": 0.5,    # Controls how much of the delayed signal is fed back
+            "wet": 0.5,         # Amount of delay in the mix
+            "dry": 0.5,         # Amount of original signal
             "amp": 1.0
         }).add()
 

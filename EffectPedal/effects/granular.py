@@ -1,11 +1,8 @@
-import sys
-sys.path.append("/usr/local/lib/python3.9/site-packages")  # Adjust path if needed
 from sc3.all import *
 
 class GranularEffect:
     def __init__(self):
-        self.server = Server("localhost")  # Only pass the name
-        self.server.addr = ("127.0.0.1", 57110)  # Set addr separately
+        self.server = Server("localhost", addr=("127.0.0.1", 57110))  # Correct parameters
         self.server.boot()
         self.define_granular_synth()
 

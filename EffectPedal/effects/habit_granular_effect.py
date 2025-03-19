@@ -3,8 +3,7 @@ import random
 
 class HabitGranularEffect:
     def __init__(self):
-        self.server = Server("localhost")  # Only pass the name
-        self.server.addr = ("127.0.0.1", 57110)  # Set addr separately
+        self.server = Server("localhost", addr=("127.0.0.1", 57110))  # Correct parameters
         self.server.boot()
         self.define_habit_granular_synth()
 
@@ -17,11 +16,12 @@ class HabitGranularEffect:
             "pan": 0.0,
             "amp": 0.5,
             "random_pitch": 0.1,  # Random pitch deviation
-            "feedback": 0.3,  # Amount of self-feedback for evolving sound
-            "jitter": 0.2  # Adds randomness to grain positions
+            "feedback": 0.3,      # Amount of self-feedback for evolving sound
+            "jitter": 0.2         # Adds randomness to grain positions
         }).add()
 
-    def start_habit_granular(self, buf, rate=1.0, grain_size=0.15, density=10, pan=0.0, amp=0.5, random_pitch=0.1, feedback=0.3, jitter=0.2):
+    def start_habit_granular(self, buf, rate=1.0, grain_size=0.15, density=10, pan=0.0, amp=0.5,
+                              random_pitch=0.1, feedback=0.3, jitter=0.2):
         self.synth = Synth("habit_granular", {
             "buf": buf,
             "rate": rate,
@@ -34,7 +34,8 @@ class HabitGranularEffect:
             "jitter": jitter
         })
 
-    def update_parameters(self, rate=None, grain_size=None, density=None, pan=None, amp=None, random_pitch=None, feedback=None, jitter=None):
+    def update_parameters(self, rate=None, grain_size=None, density=None, pan=None, amp=None,
+                           random_pitch=None, feedback=None, jitter=None):
         if rate is not None:
             self.synth.set("rate", rate)
         if grain_size is not None:
@@ -58,4 +59,5 @@ class HabitGranularEffect:
 if __name__ == "__main__":
     habit_granular = HabitGranularEffect()
     buf = 0  # This should be an actual buffer with an audio file or live input
-    habit_granular.start_habit_granular(buf, rate=1.2, grain_size=0.15, density=12, pan=-0.5, amp=0.7, random_pitch=0.2, feedback=0.5, jitter=0.3)
+    habit_granular.start_habit_granular(buf, rate=1.2, grain_size=0.15, density=12,
+                                       pan=-0.5, amp=0.7, random_pitch=0.2, feedback=0.5, jitter=0.3)
