@@ -2,7 +2,8 @@ from sc3.all import *
 
 class ReverseDelayEffect:
     def __init__(self):
-        self.server = Server()
+        self.server = Server("localhost")  # Only pass the name
+        self.server.addr = ("127.0.0.1", 57110)  # Set addr separately
         self.server.boot()
         self.define_reverse_delay_synth()
 

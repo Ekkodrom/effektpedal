@@ -2,7 +2,8 @@ from sc3.all import *
 
 class ReverbEffect:
     def __init__(self):
-        self.server = Server("localhost", "127.0.0.1", 57110)  # Correct parameters
+        self.server = Server("localhost")  # Only pass the name
+        self.server.addr = ("127.0.0.1", 57110)  # Set addr separately
         self.server.boot()
         self.define_reverb_synth()
 
