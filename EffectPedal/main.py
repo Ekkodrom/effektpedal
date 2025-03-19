@@ -29,20 +29,34 @@ class MainApp:
         time.sleep(2)
 
         print("🔹 Starting JACK...")
-        jack_cmd = "jackd -d alsa -d hw:3,0 -r 44100 -p 1024 -n 2 &"
-        subprocess.Popen(jack_cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        jack_cmd = "jackd -d alsa -d hw:3,0 -r 44100 -p 1024 -n 2"
+        jack_process = subprocess.Popen(jack_cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
         # Wait a bit to ensure JACK is fully initialized
         time.sleep(5)
 
+        # Check if JACK started properly
+        jack_status = subprocess.run("jack_lsp", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        if jack_status.returncode != 0:
+            print("❌ ERROR: JACK did not start correctly!")
+            exit(1)
+
+        print("✅ JACK is running!")
+
         print("🔹 Starting SuperCollider (scsynth)...")
-        scsynth_cmd = "scsynth -u 57110 &"
-        subprocess.Popen(scsynth_cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        scsynth_cmd = "scsynth -u 57110"
+        scsynth_process = subprocess.Popen(scsynth_cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
         # Wait for SuperCollider to boot
         time.sleep(3)
 
-        print("✅ Audio system initialized! JACK and SuperCollider are running.")
+        # Check if SuperCollider is running
+        sc_status = subprocess.run("ps aux | grep scsynth | grep -v grep", shell=True, stdout=subprocess.PIPE)
+        if sc_status.stdout == b"":
+            print("❌ ERROR: SuperCollider did not start correctly!")
+            exit(1)
+
+        print("✅ SuperCollider is running!")
 
     def init_systems(self):
         """Initialize the GUI and audio input."""
