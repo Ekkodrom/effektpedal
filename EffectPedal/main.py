@@ -2,7 +2,7 @@ import os
 import time
 import subprocess
 from PyQt5.QtWidgets import QApplication
-from sc3.all import Server, NetAddr  # ✅ SuperCollider Server imported here
+from sc3.all import Server, NetAddr
 from effect_manager import EffectManager
 from gui import EffectPedalGUI
 from audio_engine.audio_input import AudioInput
@@ -59,11 +59,13 @@ class MainApp:
 
         # ✅ Check if SuperCollider is already running
         try:
-            server = Server.default
-            server.addr = NetAddr("127.0.0.1", 57110)  # Assign the correct address
+            server = Server.default()
+            server.addr = NetAddr("127.0.0.1", 57110)
+            
             if server.is_running:
                 print("✅ SuperCollider Server is already running. Connecting...")
                 return server
+
         except Exception as e:
             print(f"🔹 No existing SuperCollider Server found ({e}), starting a new one...")
 
@@ -72,8 +74,8 @@ class MainApp:
         os.system("killall -9 scsynth sclang")
         time.sleep(2)  # Wait for cleanup
 
-        # ✅ Boot a new server
-        server = Server(name="localhost")
+        # ✅ Boot a new server with the correct addr format
+        server = Server("localhost", NetAddr("127.0.0.1", 57110))
         server.boot()
         time.sleep(4)  # Wait for server to fully start
         print("✅ SuperCollider Server Booted in main.py!")
