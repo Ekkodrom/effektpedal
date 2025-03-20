@@ -1,10 +1,9 @@
-from sc3.all import *
-import random
+from sc3.all import Synth, SynthDef
+from main import sc_manager  # Import global SuperCollider manager
 
 class HabitGranularEffect:
     def __init__(self):
-        self.server = Server(name="scsynth", addr=("127.0.0.1", 57110))  # ✅ Correct
-        self.server.boot()
+        self.server = sc_manager.server  # Use the already running server
         self.define_habit_granular_synth()
 
     def define_habit_granular_synth(self):
