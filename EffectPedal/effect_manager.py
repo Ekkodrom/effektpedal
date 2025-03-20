@@ -10,7 +10,7 @@ class EffectManager:
         print("🔹 Initializing SuperCollider Server...")
         
         # ✅ Correct way to initialize the server
-        self.server = Server(name="localhost", addr="127.0.0.1", port=57110) 
+        self.server = Server(name="localhost", addr="127.0.0.1:57110") 
         self.server.boot()  # Start SuperCollider
         print("✅ SuperCollider Server Booted!")
 
