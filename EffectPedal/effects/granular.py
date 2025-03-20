@@ -2,7 +2,7 @@ from sc3.all import Synth, SynthDef
 
 class GranularEffect:
     def __init__(self, server):
-        self.server = server  # Use the passed server
+        self.server = server  # Use the shared SuperCollider server
         self.define_granular_synth()
 
     def define_granular_synth(self):
