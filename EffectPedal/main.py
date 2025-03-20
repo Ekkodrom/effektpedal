@@ -11,14 +11,14 @@ class MainApp:
     def __init__(self):
         self.app = QApplication([])
 
-        # 🔹 Fully stop any running JACK, SuperCollider, and conflicting audio services
+        # 🔹 Stop all running JACK, SuperCollider, and conflicting audio services
         self.stop_audio_services()
 
         # 🔹 Start JACK & SuperCollider before initializing effects
         self.setup_audio_system()
 
         # ✅ Proper SuperCollider Server Handling
-        self.setup_supercollider_server()
+        self.server = self.setup_supercollider_server()
 
         # ✅ Pass the shared server instance to EffectManager
         self.effect_manager = EffectManager(self.server)
@@ -57,24 +57,28 @@ class MainApp:
         """Ensure SuperCollider server is properly set up before use"""
         print("🔹 Checking SuperCollider Server...")
 
+        # ✅ Check if SuperCollider is already running
         try:
-            # ✅ Check if the default server exists and is running
-            self.server = Server.default
-            if self.server.is_running():
+            server = Server.default
+            server.addr = NetAddr("127.0.0.1", 57110)  # Assign the correct address
+            if server.is_running:
                 print("✅ SuperCollider Server is already running. Connecting...")
-                return
+                return server
         except Exception as e:
             print(f"🔹 No existing SuperCollider Server found ({e}), starting a new one...")
 
         # ✅ Ensure no existing process is holding the port
+        print("🔹 Ensuring old SuperCollider instances are not holding the port...")
         os.system("killall -9 scsynth sclang")
         time.sleep(2)  # Wait for cleanup
 
         # ✅ Boot a new server
-        self.server = Server(name="localhost", addr=NetAddr("127.0.0.1", 57110))
-        self.server.boot()
+        server = Server(name="localhost")
+        server.boot()
         time.sleep(4)  # Wait for server to fully start
         print("✅ SuperCollider Server Booted in main.py!")
+
+        return server
 
     def init_systems(self):
         """Initialize Audio Input"""
