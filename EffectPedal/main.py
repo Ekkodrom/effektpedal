@@ -30,28 +30,27 @@ class MainApp:
 
     def stop_audio_services(self):
         """Kill all conflicting audio processes before starting JACK and SuperCollider."""
-    print("🔹 Stopping any running JACK, SuperCollider, and conflicting audio services...")
+        print("🔹 Stopping any running JACK, SuperCollider, and conflicting audio services...")
 
-    services = ["jackd", "scsynth", "sclang", "pulseaudio", "pipewire", "wireplumber"]
-    for service in services:
-        subprocess.run(["killall", "-9", service], stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
+        services = ["jackd", "scsynth", "sclang", "pulseaudio", "pipewire", "wireplumber"]
+        for service in services:
+            subprocess.run(["killall", "-9", service], stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
 
-    time.sleep(2)  # Allow processes to terminate
+        time.sleep(2)  # Allow processes to terminate
 
-    # 🔹 Ensure port 57110 is actually free before starting SuperCollider
-    while True:
-        check_port_cmd = "lsof -i :57110"
-        port_check = subprocess.run(check_port_cmd, shell=True, capture_output=True, text=True)
+        # 🔹 Ensure port 57110 is actually free before starting SuperCollider
+        while True:
+            check_port_cmd = "lsof -i :57110"
+            port_check = subprocess.run(check_port_cmd, shell=True, capture_output=True, text=True)
 
-        if not port_check.stdout:
-            break  # Port is free, exit loop
+            if not port_check.stdout:
+                break  # Port is free, exit loop
 
-        print("⚠️ Port 57110 is still in use! Retrying...")
-        subprocess.run(["killall", "-9", "scsynth", "sclang"], stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
-        time.sleep(2)  # Retry until the port is fully released
+            print("⚠️ Port 57110 is still in use! Retrying...")
+            subprocess.run(["killall", "-9", "scsynth", "sclang"], stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
+            time.sleep(2)  # Retry until the port is fully released
 
-    print("✅ All audio services stopped and port 57110 is free!")
-
+        print("✅ All audio services stopped and port 57110 is free!")
 
     def setup_audio_system(self):
         """Start JACK and SuperCollider"""
@@ -69,39 +68,39 @@ class MainApp:
 
     def setup_supercollider_server(self):
         """Ensure SuperCollider server is properly set up before use"""
-    print("🔹 Checking SuperCollider Server...")
+        print("🔹 Checking SuperCollider Server...")
 
-    try:
-        server = Server.default()
-        server.addr = NetAddr("127.0.0.1", 57110)
+        try:
+            server = Server.default()
+            server.addr = NetAddr("127.0.0.1", 57110)
 
-        if server.is_running:
-            print("✅ SuperCollider Server is already running. Connecting...")
-            return server
+            # ✅ Correct way to check if the server is running
+            if server.status == 1:  # 1 means running
+                print("✅ SuperCollider Server is already running. Connecting...")
+                return server
 
-    except Exception as e:
-        print(f"⚠️ No existing SuperCollider Server found ({e}), starting a new one...")
+        except Exception as e:
+            print(f"⚠️ No existing SuperCollider Server found ({e}), starting a new one...")
 
-    # 🔹 Ensure port 57110 is actually free before starting SuperCollider
-    while True:
-        check_port_cmd = "lsof -i :57110"
-        port_check = subprocess.run(check_port_cmd, shell=True, capture_output=True, text=True)
+        # 🔹 Ensure port 57110 is actually free before starting SuperCollider
+        while True:
+            check_port_cmd = "lsof -i :57110"
+            port_check = subprocess.run(check_port_cmd, shell=True, capture_output=True, text=True)
 
-        if not port_check.stdout:
-            break  # Port is free, exit loop
+            if not port_check.stdout:
+                break  # Port is free, exit loop
 
-        print("⚠️ Port 57110 is still in use! Retrying...")
-        subprocess.run(["killall", "-9", "scsynth", "sclang"], stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
-        time.sleep(2)  # Retry until the port is fully released
+            print("⚠️ Port 57110 is still in use! Retrying...")
+            subprocess.run(["killall", "-9", "scsynth", "sclang"], stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
+            time.sleep(2)  # Retry until the port is fully released
 
-    # ✅ Boot a new server with the correct addr format
-    server = Server("localhost", NetAddr("127.0.0.1", 57110))
-    server.boot()
-    time.sleep(4)  # Wait for server to fully start
-    print("✅ SuperCollider Server Booted in main.py!")
+        # ✅ Boot a new server with the correct addr format
+        server = Server("localhost", NetAddr("127.0.0.1", 57110))
+        server.boot()
+        time.sleep(4)  # Wait for server to fully start
+        print("✅ SuperCollider Server Booted in main.py!")
 
-    return server
-
+        return server
 
     def init_systems(self):
         """Initialize Audio Input"""
