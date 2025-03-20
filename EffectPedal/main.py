@@ -17,17 +17,8 @@ class MainApp:
         # 🔹 Start JACK & SuperCollider before initializing effects
         self.setup_audio_system()
 
-        # ✅ Check if SuperCollider is already running
-        print("🔹 Checking SuperCollider Server...")
-        self.server = Server(name="localhost", addr=NetAddr("127.0.0.1", 57110))
-
-        if self.server.is_running():
-            print("✅ SuperCollider Server is already running. Connecting...")
-        else:
-            print("🔹 Booting SuperCollider Server from main.py...")
-            self.server.boot()
-            time.sleep(4)  # Wait for server to fully start
-            print("✅ SuperCollider Server Booted in main.py!")
+        # ✅ Proper SuperCollider Server Handling
+        self.setup_supercollider_server()
 
         # ✅ Pass the shared server instance to EffectManager
         self.effect_manager = EffectManager(self.server)
@@ -41,7 +32,7 @@ class MainApp:
         """Kill all conflicting audio processes before starting JACK and SuperCollider."""
         print("🔹 Stopping any running JACK, SuperCollider, and conflicting audio services...")
 
-        services = ["jackd", "scsynth", "pulseaudio", "pipewire", "wireplumber"]
+        services = ["jackd", "scsynth", "sclang", "pulseaudio", "pipewire", "wireplumber"]
         for service in services:
             subprocess.run(["killall", "-9", service], stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
 
@@ -61,6 +52,29 @@ class MainApp:
         time.sleep(4)
 
         print("✅ Audio system initialized! JACK and SuperCollider are running.")
+
+    def setup_supercollider_server(self):
+        """Ensure SuperCollider server is properly set up before use"""
+        print("🔹 Checking SuperCollider Server...")
+
+        try:
+            # ✅ Check if the default server exists and is running
+            self.server = Server.default
+            if self.server.is_running():
+                print("✅ SuperCollider Server is already running. Connecting...")
+                return
+        except Exception as e:
+            print(f"🔹 No existing SuperCollider Server found ({e}), starting a new one...")
+
+        # ✅ Ensure no existing process is holding the port
+        os.system("killall -9 scsynth sclang")
+        time.sleep(2)  # Wait for cleanup
+
+        # ✅ Boot a new server
+        self.server = Server(name="localhost", addr=NetAddr("127.0.0.1", 57110))
+        self.server.boot()
+        time.sleep(4)  # Wait for server to fully start
+        print("✅ SuperCollider Server Booted in main.py!")
 
     def init_systems(self):
         """Initialize Audio Input"""
