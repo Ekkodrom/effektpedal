@@ -11,7 +11,10 @@ class MainApp:
     def __init__(self):
         self.app = QApplication([])
 
-        # Start JACK & SuperCollider first
+        # 🔹 Fully stop any running JACK, SuperCollider, and conflicting audio services
+        self.stop_audio_services()
+
+        # 🔹 Start JACK & SuperCollider before initializing effects
         self.setup_audio_system()
 
         # ✅ Boot SuperCollider Server BEFORE EffectManager
@@ -29,11 +32,19 @@ class MainApp:
         self.audio = AudioInput()
         self.init_systems()
 
-    def setup_audio_system(self):
+    def stop_audio_services(self):
+        """Kill all conflicting audio processes before starting JACK and SuperCollider."""
         print("🔹 Stopping any running JACK, SuperCollider, and conflicting audio services...")
-        os.system("killall -9 jackd scsynth pulseaudio pipewire wireplumber")
-        time.sleep(2)
 
+        services = ["jackd", "scsynth", "pulseaudio", "pipewire", "wireplumber"]
+        for service in services:
+            subprocess.run(["killall", "-9", service], stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
+
+        time.sleep(2)  # Allow processes to properly terminate
+        print("✅ All audio services stopped!")
+
+    def setup_audio_system(self):
+        """Start JACK and SuperCollider"""
         print("🔹 Starting JACK...")
         jack_cmd = "jackd -d alsa -d hw:3,0 -r 44100 -p 1024 -n 2 &"
         subprocess.Popen(jack_cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -47,9 +58,11 @@ class MainApp:
         print("✅ Audio system initialized! JACK and SuperCollider are running.")
 
     def init_systems(self):
+        """Initialize Audio Input"""
         self.audio.start()
 
     def run(self):
+        """Start the GUI"""
         self.gui.show()
         self.app.exec_()
 
