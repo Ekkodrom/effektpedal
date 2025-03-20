@@ -36,8 +36,17 @@ class MainApp:
         for service in services:
             subprocess.run(["killall", "-9", service], stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
 
-        time.sleep(2)  # Allow processes to properly terminate
-        print("✅ All audio services stopped!")
+        # 🔹 Check if anything is still using port 57110 (SuperCollider default port)
+        time.sleep(2)  # Allow processes to terminate
+        check_port_cmd = "lsof -i :57110"
+        port_check = subprocess.run(check_port_cmd, shell=True, capture_output=True, text=True)
+
+        if port_check.stdout:
+            print("⚠️ Port 57110 is still in use! Force killing lingering SuperCollider processes...")
+            subprocess.run(["killall", "-9", "scsynth", "sclang"], stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
+            time.sleep(2)  # Ensure the port is freed
+
+        print("✅ All audio services stopped and port 57110 is free!")
 
     def setup_audio_system(self):
         """Start JACK and SuperCollider"""
@@ -61,7 +70,7 @@ class MainApp:
         try:
             server = Server.default()
             server.addr = NetAddr("127.0.0.1", 57110)
-            
+
             if server.is_running:
                 print("✅ SuperCollider Server is already running. Connecting...")
                 return server
@@ -75,7 +84,7 @@ class MainApp:
         time.sleep(2)  # Wait for cleanup
 
         # ✅ Boot a new server with the correct addr format
-        server = Server("localhost", NetAddr("127.0.0.1", 57110))
+        server = Server("localhost", addr=NetAddr("127.0.0.1", 57110))
         server.boot()
         time.sleep(4)  # Wait for server to fully start
         print("✅ SuperCollider Server Booted in main.py!")
