@@ -2,20 +2,28 @@ import os
 import time
 import subprocess
 from PyQt5.QtWidgets import QApplication
-from gui import EffectPedalGUI
+from sc3.all import Server, NetAddr  # ✅ SuperCollider Server imported here
 from effect_manager import EffectManager
+from gui import EffectPedalGUI
 from audio_engine.audio_input import AudioInput
 
 class MainApp:
     def __init__(self):
         self.app = QApplication([])
-        
+
         # Start JACK & SuperCollider first
         self.setup_audio_system()
-        
-        # ✅ Initialize Effect Manager (which boots SuperCollider)
-        self.effect_manager = EffectManager()
-        
+
+        # ✅ Boot SuperCollider Server BEFORE EffectManager
+        print("🔹 Booting SuperCollider Server from main.py...")
+        self.server = Server(name="localhost", addr=NetAddr("127.0.0.1", 57110))
+        self.server.boot()
+        time.sleep(4)  # Wait for server to fully start
+        print("✅ SuperCollider Server Booted in main.py!")
+
+        # ✅ Pass the shared server instance to EffectManager
+        self.effect_manager = EffectManager(self.server)
+
         # Initialize GUI and Audio
         self.gui = EffectPedalGUI(self.effect_manager)
         self.audio = AudioInput()

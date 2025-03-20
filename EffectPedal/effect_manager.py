@@ -1,24 +1,17 @@
-from sc3.all import Server
-from sc3.all import Server, NetAddr  # ✅ Correct import from sc3.all
 from effects.granular import GranularEffect
 from effects.reverb import ReverbEffect
 from effects.delay import DelayEffect
 from effects.revers_delay import ReverseDelayEffect
 from effects.habit_granular_effect import HabitGranularEffect
 
-
 class EffectManager:
-    def __init__(self):
-        print("🔹 Initializing SuperCollider Server...")
-        
-        # ✅ Correct way to initialize the server
-        self.server = Server(name="localhost", addr=NetAddr("127.0.0.1", 57110))  # ✅ Correct!
+    def __init__(self, server):
+        print("🔹 Initializing Effect Manager...")
 
+        # ✅ Use the already booted server from main.py
+        self.server = server  
 
-        self.server.boot()  # Start SuperCollider
-        print("✅ SuperCollider Server Booted!")
-
-        # Pass the shared server to all effects
+        # ✅ Pass the shared server to all effects
         self.effects = {
             "granular": GranularEffect(self.server),
             "reverb": ReverbEffect(self.server),
@@ -57,7 +50,4 @@ class EffectManager:
         print("🚫 All effects stopped.")
 
 if __name__ == "__main__":
-    manager = EffectManager()
-    manager.start_effect("granular", rate=1.2, grain_size=0.15, density=12, pan=-0.5, amp=0.7)
-    manager.update_effect("granular", rate=0.8)
-    manager.stop_effect("granular")
+    print("⚠️ Run `main.py`, do not run `effect_manager.py` directly!")
