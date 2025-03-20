@@ -4,13 +4,14 @@ from effects.reverb import ReverbEffect
 from effects.delay import DelayEffect
 from effects.revers_delay import ReverseDelayEffect
 from effects.habit_granular_effect import HabitGranularEffect
+from sc3.synth import Server, NetAddr  # Import NetAddr explicitly
 
 class EffectManager:
     def __init__(self):
         print("🔹 Initializing SuperCollider Server...")
         
         # ✅ Correct way to initialize the server
-        self.server = Server(name="localhost", addr="127.0.0.1:57110")  # ✅ Correct format
+        self.server = Server(name="localhost", addr=NetAddr("127.0.0.1", 57110))  # ✅ Correct!
 
 
         self.server.boot()  # Start SuperCollider
