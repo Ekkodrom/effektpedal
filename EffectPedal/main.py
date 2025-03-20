@@ -17,12 +17,17 @@ class MainApp:
         # 🔹 Start JACK & SuperCollider before initializing effects
         self.setup_audio_system()
 
-        # ✅ Boot SuperCollider Server BEFORE EffectManager
-        print("🔹 Booting SuperCollider Server from main.py...")
+        # ✅ Check if SuperCollider is already running
+        print("🔹 Checking SuperCollider Server...")
         self.server = Server(name="localhost", addr=NetAddr("127.0.0.1", 57110))
-        self.server.boot()
-        time.sleep(4)  # Wait for server to fully start
-        print("✅ SuperCollider Server Booted in main.py!")
+
+        if self.server.is_running():
+            print("✅ SuperCollider Server is already running. Connecting...")
+        else:
+            print("🔹 Booting SuperCollider Server from main.py...")
+            self.server.boot()
+            time.sleep(4)  # Wait for server to fully start
+            print("✅ SuperCollider Server Booted in main.py!")
 
         # ✅ Pass the shared server instance to EffectManager
         self.effect_manager = EffectManager(self.server)
