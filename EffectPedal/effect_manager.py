@@ -1,10 +1,11 @@
 from sc3.all import Server
+from sc3.all import Server, NetAddr  # ✅ Correct import from sc3.all
 from effects.granular import GranularEffect
 from effects.reverb import ReverbEffect
 from effects.delay import DelayEffect
 from effects.revers_delay import ReverseDelayEffect
 from effects.habit_granular_effect import HabitGranularEffect
-from sc3.synth import Server, NetAddr  # Import NetAddr explicitly
+
 
 class EffectManager:
     def __init__(self):
