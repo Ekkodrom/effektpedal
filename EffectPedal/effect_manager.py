@@ -8,7 +8,9 @@ from effects.habit_granular_effect import HabitGranularEffect
 class EffectManager:
     def __init__(self):
         print("🔹 Initializing SuperCollider Server...")
-        self.server = Server("localhost")  # Correct way to initialize
+        
+        # ✅ Correct way to initialize the server
+        self.server = Server(name="localhost", addr="127.0.0.1", port=57110) 
         self.server.boot()  # Start SuperCollider
         print("✅ SuperCollider Server Booted!")
 

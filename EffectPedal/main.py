@@ -13,7 +13,7 @@ class MainApp:
         # Start JACK & SuperCollider first
         self.setup_audio_system()
         
-        # Initialize Effect Manager
+        # ✅ Initialize Effect Manager (which boots SuperCollider)
         self.effect_manager = EffectManager()
         
         # Initialize GUI and Audio
@@ -34,7 +34,7 @@ class MainApp:
         print("🔹 Starting SuperCollider (scsynth)...")
         scsynth_cmd = "scsynth -u 57110 &"
         subprocess.Popen(scsynth_cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        time.sleep(3)
+        time.sleep(4)
 
         print("✅ Audio system initialized! JACK and SuperCollider are running.")
 
