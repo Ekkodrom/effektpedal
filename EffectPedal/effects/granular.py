@@ -1,9 +1,8 @@
 from sc3.all import Synth, SynthDef
-from main import sc_manager  # Import global SuperCollider manager
 
 class GranularEffect:
-    def __init__(self):
-        self.server = sc_manager.server  # Use the already running server
+    def __init__(self, server):
+        self.server = server  # Use the passed server
         self.define_granular_synth()
 
     def define_granular_synth(self):

@@ -5,18 +5,22 @@ from PyQt5.QtWidgets import QApplication
 from gui import EffectPedalGUI
 from audio_engine.audio_input import AudioInput
 from pythonosc import udp_client
-from sc3.all import Server
 
 # OSC connection to SuperCollider
 osc_client = udp_client.SimpleUDPClient("127.0.0.1", 57120)
 
-class SuperColliderManager:
+class MainApp:
     def __init__(self):
-        """Manages the SuperCollider server instance."""
-        self.server = Server("scsynth", "127.0.0.1", 57110)
-    
-    def start(self):
-        """Starts JACK and SuperCollider."""
+        self.app = QApplication([])
+        self.gui = EffectPedalGUI()
+        self.audio = AudioInput()
+
+        # Start JACK and SuperCollider automatically
+        self.setup_audio_system()
+        self.init_systems()
+
+    def setup_audio_system(self):
+        """Stops all audio services, then starts JACK and SuperCollider correctly."""
         print("🔹 Stopping any running JACK, SuperCollider, and conflicting audio services...")
         os.system("killall -9 jackd scsynth pulseaudio pipewire wireplumber")
         time.sleep(2)
@@ -32,19 +36,6 @@ class SuperColliderManager:
         time.sleep(3)  # Wait for SuperCollider to boot
 
         print("✅ Audio system initialized! JACK and SuperCollider are running.")
-        self.server.boot()
-
-sc_manager = SuperColliderManager()
-
-class MainApp:
-    def __init__(self):
-        self.app = QApplication([])
-        self.gui = EffectPedalGUI()
-        self.audio = AudioInput()
-
-        # Start JACK and SuperCollider automatically
-        sc_manager.start()
-        self.init_systems()
 
     def init_systems(self):
         """Initialize the GUI and audio input."""
